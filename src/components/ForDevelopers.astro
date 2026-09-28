@@ -1,0 +1,41 @@
+---
+import { copy } from "../data/copy";
+const d = copy.dev;
+---
+<section id="developers" class="section">
+  <div class="wrap grid">
+    <div>
+      <p class="eyebrow" data-fade>{d.eyebrow}</p>
+      <h2 class="title" data-split>{d.title}</h2>
+      <p class="lead" data-fade>{d.body}</p>
+      <ul class="bullets" data-fade>{d.bullets.map((b) => <li>{b}</li>)}</ul>
+    </div>
+    <div class="stack" data-fade style="--d:.15s">
+      <div class="window">
+        <div class="window-bar"><span>Terminal</span><button type="button" class="pill copy" data-copy="#install-cmd">Copy</button></div>
+        <pre class="code term"><span class="c">$ </span><span id="install-cmd">{d.install}</span></pre>
+      </div>
+      <p class="note mono">{d.installNote}</p>
+      <div class="window">
+        <div class="window-bar"><span>{d.usageFile}</span></div>
+        <pre class="code use"><span class="k">import</span> &#123; NotificationCard &#125; <span class="k">from</span> <span class="s">"@/components/ui/notification-card"</span>
+
+<span class="k">export default function</span> Page() &#123;
+  <span class="k">return</span> &lt;NotificationCard /&gt;
+&#125;</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 72px; align-items: center; }
+  .bullets { margin-top: 24px; display: grid; gap: 4px; }
+  .bullets li { position: relative; padding-left: 22px; }
+  .bullets li::before { content: ""; position: absolute; left: 0; top: .62em; width: 9px; height: 9px; background: var(--secondary); border-radius: 2px; }
+  .stack { display: grid; gap: 14px; }
+  .term, .use { padding: 18px; }
+  .copy { cursor: pointer; background: none; color: var(--foreground); }
+  .note { font-size: 11px; color: var(--muted-foreground); }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 40px; } }
+</style>

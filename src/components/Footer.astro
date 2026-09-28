@@ -1,0 +1,16 @@
+---
+import { copy } from "../data/copy";
+const f = copy.footer;
+---
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 {copy.brand}. {f.tag}</span>
+    <nav aria-label="Footer">{f.links.map((l) => <a href={l.href}>{l.label}</a>)}</nav>
+  </div>
+</footer>
+
+<style>
+  footer { border-top: 1px solid var(--border); }
+  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 30px; padding-bottom: 30px; font: 400 12px var(--font-mono); color: var(--muted-foreground); }
+  nav { display: flex; gap: 20px; } a { text-decoration: none; } a:hover { color: var(--foreground); }
+</style>

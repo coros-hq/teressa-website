@@ -1,0 +1,16 @@
+---
+interface Props { href?: string; variant?: "solid" | "ghost" | "outline"; arrow?: boolean; type?: "button" | "submit" }
+const { href, variant = "solid", arrow = true, type = "button" } = Astro.props;
+const Tag = href ? "a" : "button";
+---
+<Tag class={`btn btn-${variant}`} {...(href ? { href } : { type })}>
+  <span class="btn-text">
+    <span class="btn-l"><slot /></span>
+    <span class="btn-l" aria-hidden="true"><slot /></span>
+  </span>
+  {arrow && (
+    <span class="btn-arrow" aria-hidden="true">
+      <span class="btn-arrow-in"><span>→</span><span>→</span></span>
+    </span>
+  )}
+</Tag>

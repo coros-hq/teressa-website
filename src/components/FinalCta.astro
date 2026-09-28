@@ -1,0 +1,30 @@
+---
+import Button from "./Button.astro";
+import { copy } from "../data/copy";
+const c = copy.cta;
+---
+<section id="waitlist" class="cta">
+  <div class="wrap">
+    <h2 data-split>{c.title}</h2>
+    <p class="lead" data-fade>{c.body}</p>
+    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success}>
+      <label class="sr" for="waitlist-email">{c.label}</label>
+      <input class="input" id="waitlist-email" name="email" type="email" autocomplete="email" placeholder={c.placeholder} aria-describedby="waitlist-msg" />
+      <Button type="submit">{c.button}</Button>
+    </form>
+    <p id="waitlist-msg" class="form-msg" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
+<style>
+  .cta { padding: 150px 0; text-align: center; position: relative; overflow: hidden; }
+  .cta::before { content: ""; position: absolute; inset: auto -10% -70% -10%; height: 90%; background: radial-gradient(ellipse at 35% 50%, color-mix(in srgb, var(--primary) 40%, transparent), transparent 60%), radial-gradient(ellipse at 70% 50%, color-mix(in srgb, var(--secondary) 40%, transparent), transparent 60%); filter: blur(50px); pointer-events: none; }
+  h2 { font-size: clamp(38px, 6.6vw, 96px); letter-spacing: -.045em; line-height: 1; font-weight: 400; max-width: 10em; margin: 0 auto 22px; }
+  .lead { margin: 0 auto 34px; }
+  form { display: flex; gap: 12px; max-width: 560px; margin: 0 auto; align-items: center; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .form-msg { margin-top: 16px; min-height: 1.5em; font-size: 14px; }
+  :global(.form-msg.err) { color: var(--primary-ink); }
+  :global(.form-msg.ok) { color: var(--secondary-ink); }
+  @media (max-width: 600px) { form { flex-direction: column; align-items: stretch; } }
+</style>

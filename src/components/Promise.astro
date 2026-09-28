@@ -1,0 +1,23 @@
+---
+import { copy } from "../data/copy";
+const p = copy.promise;
+---
+<section id="promise" class="section">
+  <div class="wrap grid">
+    <div>
+      <p class="eyebrow" data-fade>{p.eyebrow}</p>
+      <h2 class="title" data-split>{p.title}</h2>
+    </div>
+    <div class="body">
+      {p.body.map((t, i) => <p class="lead" data-fade style={`--d:${i * 0.12}s`}>{t}</p>)}
+      <div class="pill-row" data-fade style="--d:.3s">{p.chips.map((c) => <span class="pill">{c}</span>)}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: end; }
+  .body { display: grid; gap: 20px; }
+  .lead { font-size: 19px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>

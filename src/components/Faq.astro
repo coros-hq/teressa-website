@@ -1,0 +1,30 @@
+---
+import { copy } from "../data/copy";
+const f = copy.faq;
+---
+<section id="faq" class="section alt">
+  <div class="wrap narrow">
+    <p class="eyebrow" data-fade>{f.eyebrow}</p>
+    <h2 class="title" data-split>{f.title}</h2>
+    <div class="list">
+      {f.items.map((it, i) => (
+        <details data-fade style={`--d:${i * 0.06}s`}>
+          <summary>{it.q}</summary>
+          <p>{it.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .list { margin-top: 40px; }
+  details { border-top: 1px solid var(--border); padding: 22px 0; }
+  details:last-child { border-bottom: 1px solid var(--border); }
+  summary { cursor: pointer; font-size: 23px; font-weight: 400; letter-spacing: -.02em; list-style: none; display: flex; justify-content: space-between; gap: 20px; transition: color .3s; }
+  summary:hover { color: var(--primary-ink); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: var(--font-mono); color: var(--primary-ink); transition: rotate .4s var(--ease); }
+  details[open] summary::after { rotate: 45deg; }
+  details p { margin-top: 12px; color: var(--muted-foreground); max-width: 38em; font-weight: 300; }
+</style>

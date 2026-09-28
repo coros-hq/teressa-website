@@ -1,0 +1,138 @@
+---
+import PairMock from "./PairMock.astro";
+import { copy } from "../data/copy";
+const f = copy.features;
+const galleryItems = ["Command palette", "Pricing toggle", "Date range", "Empty state"];
+const checks = f.rows[1].bullets;
+---
+<section id="features" class="section">
+  <div class="wrap">
+    <p class="eyebrow" data-fade>{f.eyebrow}</p>
+    <h2 class="title" data-split>{f.title}</h2>
+
+    <!-- Live pair sessions: the differentiator, given the most room -->
+    <article class="pair-feature">
+      <div class="pair-head">
+        <p class="eyebrow blue" data-fade>{f.pair.eyebrow}</p>
+        <h3 data-split>{f.pair.title}</h3>
+        <p class="lead" data-fade>{f.pair.body}</p>
+      </div>
+      <div data-fade style="--d:.15s"><PairMock /></div>
+      <ul class="points">
+        {f.pair.points.map((p, i) => (
+          <li data-fade style={`--d:${i * 0.1}s`}><strong>{p.t}</strong><span>{p.d}</span></li>
+        ))}
+      </ul>
+    </article>
+
+    {f.rows.map((r, i) => (
+      <article class:list={["row", { flip: i % 2 === 1 }]}>
+        <div class="text">
+          <p class="eyebrow" data-fade>{r.eyebrow}</p>
+          <h3 data-split>{r.title}</h3>
+          <p class="lead" data-fade>{r.body}</p>
+          <ul class="bullets" data-fade style="--d:.15s">{r.bullets.map((b) => <li>{b}</li>)}</ul>
+        </div>
+        <div class="vis" data-fade style="--d:.1s">
+          {r.id === "editor" && (
+            <div class="window">
+              <div class="window-bar"><span class="dots"><i></i><i></i><i></i></span><span>pricing-toggle.tsx</span><span class="badge s" style="margin-left:auto">● Autosaved</span></div>
+              <div class="split">
+                <pre class="code" aria-hidden="true"><span class="ln">1</span><span class="k">export function</span> PricingToggle() &#123;
+<span class="ln">2</span>  <span class="k">const</span> [yearly, setYearly] = useState(<span class="k">false</span>)
+<span class="ln">3</span>  <span class="k">return</span> &lt;Switch checked=&#123;yearly&#125; /&gt;
+<span class="ln">4</span>&#125;</pre>
+                <div class="hist">
+                  <span class="cap mono">Version history</span>
+                  <p><b>v4</b> Fixed focus ring <small>2 min ago</small></p>
+                  <p><b>v3</b> Use ring token <small>yesterday</small></p>
+                  <p><b>v2</b> First working draft <small>yesterday</small></p>
+                  <div class="pill-row"><span class="pill on">Light</span><span class="pill">Dark</span></div>
+                </div>
+              </div>
+            </div>
+          )}
+          {r.id === "publish" && (
+            <div class="window" data-assemble data-gap="700">
+              <div class="window-bar"><span>Publish checklist</span><span class="badge p" style="margin-left:auto">MIT</span></div>
+              <ul class="checks">
+                {checks.map((c, n) => <li data-step={n + 1}><span class="tick">✓</span>{c}</li>)}
+                <li data-step="5"><span class="tick">✓</span>I confirm this component is human-made</li>
+              </ul>
+              <div class="publish"><span class="pv-btn" data-step="6">Publish component</span></div>
+            </div>
+          )}
+          {r.id === "browse" && (
+            <div class="window">
+              <div class="window-bar"><span class="input-mock">Search components…</span><span class="pill-row" style="margin-left:auto"><span class="pill on">Zinc</span><span class="pill">Rose</span><span class="pill">Blue</span></span></div>
+              <div class="gallery">
+                {galleryItems.map((g, n) => (
+                  <div class="tile"><div class="thumb" style={`--k:${n}`}></div><span>{g}</span></div>
+                ))}
+              </div>
+              <div class="install mono"><span>npx shadcn add &lt;url&gt;</span><span class="pill">Copy</span><span class="pill">Fork</span></div>
+            </div>
+          )}
+          {r.id === "feedback" && (
+            <div class="window">
+              <div class="window-bar"><span>Comments</span><span class="pill-row" style="margin-left:auto"><span class="pill">Accessibility</span><span class="pill">API design</span><span class="pill">Visual polish</span></span></div>
+              <pre class="code" aria-hidden="true"><span class="ln">13</span>  &lt;<span class="k">button</span> onClick=&#123;toggle&#125;&gt;
+<span class="ln pin">14</span>    &lt;<span class="k">span</span>&gt;&#123;label&#125;&lt;/<span class="k">span</span>&gt;
+<span class="ln">15</span>  &lt;/<span class="k">button</span>&gt;</pre>
+              <div class="comment">
+                <p class="mono cap"><span class="badge s">Accessibility</span> Line 14</p>
+                <p>Add an aria-label here. Screen readers won't announce the icon-only state.</p>
+                <span class="pill on">Mark as addressed</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pair-feature { margin: 72px 0 40px; padding: 48px; border: 1px solid var(--border); border-radius: 28px; background: var(--card); position: relative; overflow: hidden; }
+  .pair-feature::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--primary) 50%, var(--secondary) 50%); }
+  .pair-head { max-width: 46em; margin-bottom: 40px; }
+  .pair-head h3 { font-size: clamp(30px, 4.4vw, 60px); line-height: 1.02; letter-spacing: -.04em; font-weight: 400; margin: 14px 0 18px; }
+  .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .points li { display: grid; gap: 4px; border-top: 1px solid var(--border); padding-top: 14px; }
+  .points strong { font-weight: 500; font-size: 18px; } .points span { color: var(--muted-foreground); font-weight: 300; }
+  .row { display: grid; grid-template-columns: 1fr 1.1fr; gap: 72px; align-items: center; padding: 72px 0; border-top: 1px solid var(--border); }
+  .row:first-of-type { margin-top: 0; }
+  .row.flip .text { order: 2; }
+  .row h3 { font-size: clamp(28px, 3.4vw, 46px); line-height: 1.05; letter-spacing: -.035em; font-weight: 400; margin: 12px 0 16px; }
+  .row .lead { font-size: 18px; }
+  .bullets { margin-top: 22px; display: grid; gap: 4px; }
+  .bullets li { position: relative; padding-left: 22px; }
+  .bullets li::before { content: ""; position: absolute; left: 0; top: .62em; width: 9px; height: 9px; background: var(--primary); border-radius: 2px; }
+  .cap { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .1em; }
+  .split { display: grid; grid-template-columns: 1.2fr 1fr; }
+  .split .code { padding: 16px 8px 16px 14px; border-right: 1px solid var(--border); font-size: 12px; }
+  .hist { padding: 16px; display: grid; gap: 8px; align-content: start; font-size: 13px; }
+  .hist p { display: grid; } .hist b { font: 500 11px var(--font-mono); color: var(--secondary-ink); } .hist small { color: var(--muted-foreground); }
+  .checks { display: grid; }
+  .checks li { display: flex; gap: 12px; align-items: center; padding: 13px 16px; border-bottom: 1px solid var(--border); }
+  .tick { width: 20px; height: 20px; border-radius: 50%; background: var(--secondary); color: #fff; display: grid; place-items: center; font-size: 11px; flex: none; }
+  .publish { padding: 16px; }
+  .pv-btn { display: inline-block; background: var(--primary); color: #fff; font-size: 14px; font-weight: 500; padding: 8px 18px; border-radius: 99px; }
+  .input-mock { border: 1px solid var(--input); border-radius: 99px; padding: 4px 14px; min-width: 150px; }
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  .tile { display: grid; gap: 8px; font-size: 13px; }
+  .thumb { aspect-ratio: 16/10; border-radius: 10px; border: 1px solid var(--border); background: var(--background); position: relative; overflow: hidden; }
+  .thumb::before { content: ""; position: absolute; inset: 22% 18%; border-radius: 8px; background: color-mix(in srgb, var(--primary) 70%, var(--background)); opacity: .9; }
+  .thumb[style*="--k:1"]::before { background: color-mix(in srgb, var(--secondary) 75%, var(--background)); border-radius: 99px; inset: 38% 25%; }
+  .thumb[style*="--k:2"]::before { inset: 30% 12%; background: var(--muted); border: 1px solid var(--input); }
+  .thumb[style*="--k:3"]::before { background: none; border: 1px dashed var(--input); }
+  .install { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; } .install span:first-child { margin-right: auto; }
+  .window .code { padding: 16px 8px 16px 14px; }
+  .ln.pin { color: var(--secondary-ink); opacity: 1; font-weight: 500; }
+  .comment { margin: 0 16px 16px; padding: 14px; border: 1px solid var(--border); border-left: 3px solid var(--secondary); border-radius: 10px; background: var(--background); display: grid; gap: 8px; justify-items: start; font-size: 14px; }
+  .comment .cap { display: flex; gap: 8px; align-items: center; }
+  @media (max-width: 860px) {
+    .pair-feature { padding: 24px; } .points { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; } .row.flip .text { order: 0; } .split { grid-template-columns: 1fr; }
+  }
+</style>
