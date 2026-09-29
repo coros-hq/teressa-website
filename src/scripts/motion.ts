@@ -15,11 +15,22 @@ document.getElementById("theme-toggle")?.addEventListener("click", () => {
   syncLabel();
 });
 
+const send = (name: string, props?: Record<string, string | number>) => { try { track(name, props); } catch {} };
+
 // ---- nav background on scroll ----
 const nav = document.getElementById("nav");
-const onScroll = () => nav?.classList.toggle("scrolled", scrollY > 24);
+const depths = new Set<number>();
+let ticking = false;
+// one rAF-throttled scroll handler; layout reads (scrollHeight) happen at most once per frame
+const onScroll = () => {
+  ticking = false;
+  nav?.classList.toggle("scrolled", scrollY > 24);
+  if (depths.size === 4) return;
+  const pct = ((scrollY + innerHeight) / document.documentElement.scrollHeight) * 100;
+  [25, 50, 75, 100].forEach((d) => { if (pct >= d - 1 && !depths.has(d)) { depths.add(d); send("scroll_depth", { percent: d }); } });
+};
 onScroll();
-addEventListener("scroll", onScroll, { passive: true });
+addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
 
 // ---- split text into masked words ----
 let idx = 0;
@@ -90,16 +101,10 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
 );
 
 // ---- analytics (custom events; pageviews come from <Analytics />) ----
-const send = (name: string, props?: Record<string, string | number>) => { try { track(name, props); } catch {} };
 document.addEventListener("click", (e) => {
   const a = (e.target as Element).closest<HTMLAnchorElement>('a[href="#waitlist"]');
   if (a) send("cta_click", { location: a.closest("#nav") ? "nav" : "hero" });
 });
-const depths = new Set<number>();
-addEventListener("scroll", () => {
-  const pct = ((scrollY + innerHeight) / document.documentElement.scrollHeight) * 100;
-  [25, 50, 75, 100].forEach((d) => { if (pct >= d - 1 && !depths.has(d)) { depths.add(d); send("scroll_depth", { percent: d }); } });
-}, { passive: true });
 
 // ---- waitlist forms (hero + footer; saved via /api/waitlist -> Buttondown API) ----
 document.querySelectorAll<HTMLFormElement>("form[data-waitlist]").forEach((form) => {
