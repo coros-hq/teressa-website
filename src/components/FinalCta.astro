@@ -2,12 +2,15 @@
 import Button from "./Button.astro";
 import { copy } from "../data/copy";
 const c = copy.cta;
+const username = import.meta.env.PUBLIC_BUTTONDOWN_USERNAME ?? "teressa";
+const endpoint = `https://buttondown.com/api/emails/embed-subscribe/${username}`;
 ---
 <section id="waitlist" class="cta">
   <div class="wrap">
     <h2 data-split>{c.title}</h2>
     <p class="lead" data-fade>{c.body}</p>
-    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success}>
+    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed} data-endpoint={endpoint}>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp" />
       <label class="sr" for="waitlist-email">{c.label}</label>
       <input class="input" id="waitlist-email" name="email" type="email" autocomplete="email" placeholder={c.placeholder} aria-describedby="waitlist-msg" />
       <Button type="submit">{c.button}</Button>
@@ -22,6 +25,7 @@ const c = copy.cta;
   h2 { font-size: clamp(38px, 6.6vw, 96px); letter-spacing: -.045em; line-height: 1; font-weight: 400; max-width: 10em; margin: 0 auto 22px; }
   .lead { margin: 0 auto 34px; }
   form { display: flex; gap: 12px; max-width: 560px; margin: 0 auto; align-items: center; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .form-msg { margin-top: 16px; min-height: 1.5em; font-size: 14px; }
   :global(.form-msg.err) { color: var(--primary-ink); }

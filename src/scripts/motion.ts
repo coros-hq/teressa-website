@@ -87,22 +87,34 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
   })
 );
 
-// ---- waitlist form (front-end only) ----
+// ---- waitlist form (Buttondown embed endpoint) ----
 const form = document.getElementById("waitlist-form") as HTMLFormElement | null;
 if (form) {
-  const input = form.querySelector("input")!;
+  const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+  const submit = form.querySelector<HTMLButtonElement>("button")!;
   const msg = document.getElementById("waitlist-msg")!;
-  const text = form.dataset;
-  form.addEventListener("submit", (e) => {
+  const t = form.dataset;
+  const say = (ok: boolean, text: string) => { msg.className = ok ? "form-msg ok" : "form-msg err"; msg.textContent = text; };
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const v = input.value.trim();
-    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-    input.setAttribute("aria-invalid", String(!ok));
-    msg.className = ok ? "form-msg ok" : "form-msg err";
-    msg.textContent = !v ? text.errorEmpty! : !ok ? text.errorInvalid! : text.success!;
-    if (!ok) return input.focus();
-    // TODO: send `v` to the waitlist service. Nothing is stored yet.
-    form.reset();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    input.setAttribute("aria-invalid", String(!valid));
+    if (!valid) { say(false, v ? t.errorInvalid! : t.errorEmpty!); return input.focus(); }
+    // Honeypot: bots fill the hidden field; pretend it worked and send nothing.
+    if ((form.elements.namedItem("website") as HTMLInputElement).value) return say(true, t.success!);
+    submit.disabled = true;
+    try {
+      // no-cors: Buttondown's embed endpoint sends no CORS headers, so the reply is opaque.
+      // A resolved request means it was delivered; a network failure throws.
+      await fetch(t.endpoint!, { method: "POST", mode: "no-cors", body: new URLSearchParams({ email: v, embed: "1" }) });
+      say(true, t.success!);
+      form.reset();
+    } catch {
+      say(false, t.errorFailed!);
+    } finally {
+      submit.disabled = false;
+    }
   });
 }
 
