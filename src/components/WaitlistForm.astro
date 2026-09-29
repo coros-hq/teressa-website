@@ -1,0 +1,30 @@
+---
+import Button from "./Button.astro";
+import { copy } from "../data/copy";
+interface Props { source: "hero" | "footer"; center?: boolean }
+const { source, center = false } = Astro.props;
+const c = copy.cta;
+const id = `waitlist-${source}`;
+---
+<div class:list={["waitlist", { center }]}>
+  <form data-waitlist data-source={source} novalidate data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed} data-error-blocked={c.errorBlocked} data-loading={c.loading}>
+    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp" />
+    <label class="sr" for={`${id}-email`}>{c.label}</label>
+    <input class="input" id={`${id}-email`} name="email" type="email" autocomplete="email" placeholder={c.placeholder} aria-describedby={`${id}-msg`} />
+    <Button type="submit">{c.button}</Button>
+  </form>
+  <p id={`${id}-msg`} class="form-msg" role="status" aria-live="polite" data-waitlist-msg></p>
+  <p class="form-note">{c.note}</p>
+</div>
+
+<style>
+  .waitlist { max-width: 560px; }
+  .waitlist.center { margin: 0 auto; }
+  form { display: flex; gap: 12px; align-items: center; }
+  form[hidden] { display: none; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .form-note { margin-top: 12px; font-size: 13px; color: var(--muted-foreground); }
+  .waitlist:has(form[hidden]) .form-note { display: none; }
+  @media (max-width: 600px) { form { flex-direction: column; align-items: stretch; } }
+</style>

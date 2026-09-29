@@ -12,7 +12,7 @@ export const copy = {
   hero: {
     kicker: "Design, publish, get feedback",
     title: "Better UI components, built together.",
-    sub: "Design, publish and get feedback on UI components, or build one with a friend in a live pair session. Copy the code or install it with one command.",
+    sub: "Publish UI components, get feedback on the code, or build one with a friend in a live pair session.",
     primary: "Join the waitlist",
     secondary: "See how it works",
     mockCaption: "An illustration of the editor. Teressa hasn't launched yet.",
@@ -120,6 +120,8 @@ export const copy = {
     label: "Email address",
     placeholder: "you@example.com",
     button: "Join the waitlist",
+    loading: "Joining…",
+    note: "One email when we open. Nothing else.",
     errorEmpty: "Enter your email address.",
     errorInvalid: "That doesn't look like an email address. Check it and try again.",
     errorBlocked: "We couldn't add that address. Try a different email.",

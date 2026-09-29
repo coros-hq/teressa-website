@@ -1,8 +1,10 @@
+import { track } from "@vercel/analytics";
+
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const root = document.documentElement;
 
 // ---- theme toggle ----
-const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches);
+const isDark = () => root.dataset.theme === "dark";
 const themeLabel = document.getElementById("theme-label");
 const syncLabel = () => themeLabel && (themeLabel.textContent = isDark() ? "Dark" : "Light");
 syncLabel();
@@ -87,41 +89,60 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
   })
 );
 
-// ---- waitlist form (saved via /api/waitlist -> Buttondown API) ----
-const form = document.getElementById("waitlist-form") as HTMLFormElement | null;
-if (form) {
+// ---- analytics (custom events; pageviews come from <Analytics />) ----
+const send = (name: string, props?: Record<string, string | number>) => { try { track(name, props); } catch {} };
+document.addEventListener("click", (e) => {
+  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href="#waitlist"]');
+  if (a) send("cta_click", { location: a.closest("#nav") ? "nav" : "hero" });
+});
+const depths = new Set<number>();
+addEventListener("scroll", () => {
+  const pct = ((scrollY + innerHeight) / document.documentElement.scrollHeight) * 100;
+  [25, 50, 75, 100].forEach((d) => { if (pct >= d - 1 && !depths.has(d)) { depths.add(d); send("scroll_depth", { percent: d }); } });
+}, { passive: true });
+
+// ---- waitlist forms (hero + footer; saved via /api/waitlist -> Buttondown API) ----
+document.querySelectorAll<HTMLFormElement>("form[data-waitlist]").forEach((form) => {
   const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
   const submit = form.querySelector<HTMLButtonElement>("button")!;
-  const msg = document.getElementById("waitlist-msg")!;
+  const labels = [...submit.querySelectorAll<HTMLElement>(".btn-l")];
+  const idleLabels = labels.map((l) => l.textContent);
+  const msg = form.parentElement!.querySelector<HTMLElement>("[data-waitlist-msg]")!;
   const t = form.dataset;
+  const source = t.source!;
   const say = (ok: boolean, text: string) => { msg.className = ok ? "form-msg ok" : "form-msg err"; msg.textContent = text; };
+  const busy = (on: boolean) => { submit.disabled = on; labels.forEach((l, i) => (l.textContent = on ? t.loading! : idleLabels[i])); };
+  input.addEventListener("focus", () => send("waitlist_focus", { source }), { once: true });
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const v = input.value.trim();
     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
     input.setAttribute("aria-invalid", String(!valid));
-    if (!valid) { say(false, v ? t.errorInvalid! : t.errorEmpty!); return input.focus(); }
+    if (!valid) { send("waitlist_submit", { source, result: "invalid" }); say(false, v ? t.errorInvalid! : t.errorEmpty!); return input.focus(); }
     // Honeypot: bots fill the hidden field; pretend it worked and send nothing.
     if ((form.elements.namedItem("website") as HTMLInputElement).value) return say(true, t.success!);
-    submit.disabled = true;
+    busy(true);
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: v, website: (form.elements.namedItem("website") as HTMLInputElement).value }),
       });
-      if (res.status === 400) return say(false, t.errorInvalid!);
-      if (res.status === 403) return say(false, t.errorBlocked!);
+      if (res.status === 400) { send("waitlist_submit", { source, result: "invalid" }); return say(false, t.errorInvalid!); }
+      if (res.status === 403) { send("waitlist_submit", { source, result: "blocked" }); return say(false, t.errorBlocked!); }
       if (!res.ok) throw new Error(String(res.status));
+      send("waitlist_submit", { source, result: "success" });
       say(true, t.success!);
       form.reset();
+      form.hidden = true;
     } catch {
+      send("waitlist_submit", { source, result: "error" });
       say(false, t.errorFailed!);
     } finally {
-      submit.disabled = false;
+      busy(false);
     }
   });
-}
+});
 
 // ---- pixel trail in the hero ----
 const canvas = document.getElementById("pixel-trail") as HTMLCanvasElement | null;
@@ -151,21 +172,26 @@ if (canvas && hero && !reduce) {
     last = i;
     cells[i] = 1;
   });
+  let running = false;
   const loop = () => {
     if (frame++ % 20 === 0) {
       const cs = getComputedStyle(root);
       colors = [cs.getPropertyValue("--primary").trim(), cs.getPropertyValue("--secondary").trim()];
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
     for (let i = 0; i < cells.length; i++) {
       const a = cells[i];
       if (a <= 0.01) continue;
+      alive = true;
       ctx.globalAlpha = a * 0.5;
       ctx.fillStyle = colors[(i + Math.floor(i / cols)) % 2];
       ctx.fillRect((i % cols) * SIZE, Math.floor(i / cols) * SIZE, SIZE - 1, SIZE - 1);
       cells[i] = a * 0.94;
     }
-    requestAnimationFrame(loop);
+    if (alive) requestAnimationFrame(loop);
+    else running = false;
   };
-  loop();
+  const start = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
+  hero.addEventListener("pointermove", start);
 }

@@ -1,7 +1,7 @@
 /* Tokens use shadcn/ui's CSS variable names so components map 1:1 to the system. */
 :root {
-  --background: #141414;
-  --foreground: #f4f4f1;
+  --background: #f4f4f1;
+  --foreground: #141414;
   --card: color-mix(in srgb, var(--foreground) 4%, var(--background));
   --card-foreground: var(--foreground);
   --popover: var(--card);
@@ -18,18 +18,14 @@
   --ring: var(--secondary);
   --radius: 0.625rem;
   /* text-safe variants of the brand colors (small text needs more contrast) */
-  --primary-ink: var(--primary);
-  --secondary-ink: #6e9bea;
+  --primary-ink: #b8370a;
+  --secondary-ink: #2f6fd6;
   --font-sans: "Outfit", system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  color-scheme: dark;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) { --background: #f4f4f1; --foreground: #141414; --primary-ink: #b8370a; --secondary-ink: #2f6fd6; color-scheme: light; }
-}
-:root[data-theme="light"] { --background: #f4f4f1; --foreground: #141414; --primary-ink: #b8370a; --secondary-ink: #2f6fd6; color-scheme: light; }
-:root[data-theme="dark"] { --background: #141414; --foreground: #f4f4f1; }
+:root[data-theme="dark"] { --background: #141414; --foreground: #f4f4f1; --primary-ink: var(--primary); --secondary-ink: #6e9bea; color-scheme: dark; }
 
 * { box-sizing: border-box; margin: 0; }
 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -73,6 +69,9 @@ ul { list-style: none; padding: 0; }
 .badge.s { color: var(--secondary-ink); border-color: color-mix(in srgb, var(--secondary) 45%, transparent); }
 .input { width: 100%; height: 50px; border-radius: 99px; border: 1px solid var(--input); background: var(--background); color: var(--foreground); padding: 0 20px; font: 400 16px var(--font-sans); }
 .input::placeholder { color: var(--muted-foreground); }
+.form-msg { margin-top: 16px; min-height: 1.5em; font-size: 14px; }
+.form-msg.err { color: var(--primary-ink); }
+.form-msg.ok { color: var(--secondary-ink); font-size: 18px; font-weight: 500; }
 .input[aria-invalid="true"] { border-color: var(--primary); }
 .window { border: 1px solid var(--border); border-radius: 16px; background: var(--card); overflow: hidden; box-shadow: 0 30px 80px -30px color-mix(in srgb, #000 55%, transparent); }
 .window-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font: 400 12px var(--font-mono); color: var(--muted-foreground); }
@@ -105,15 +104,9 @@ ul { list-style: none; padding: 0; }
 @media (max-width: 860px) { .section { padding: 80px 0; } }
 
 /* theme toggle icon: moon in dark, sun in light */
-.i-sun { display: none; }
-:root[data-theme="light"] .i-sun { display: block; } :root[data-theme="light"] .i-moon { display: none; }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .i-sun { display: block; } :root:not([data-theme]) .i-moon { display: none; }
-}
+.i-moon { display: none; }
+:root[data-theme="dark"] .i-moon { display: block; } :root[data-theme="dark"] .i-sun { display: none; }
 
 /* logo is inverted on purpose: light tile in dark mode, dark tile in light mode */
-:root .logo-light { display: block; }
-:root[data-theme="light"] .logo-light { display: none; } :root[data-theme="light"] .logo-dark { display: block; }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .logo-light { display: none; } :root:not([data-theme]) .logo-dark { display: block; }
-}
+:root .logo-light { display: none; } :root .logo-dark { display: block; }
+:root[data-theme="dark"] .logo-light { display: block; } :root[data-theme="dark"] .logo-dark { display: none; }
