@@ -87,7 +87,7 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
   })
 );
 
-// ---- waitlist form (Buttondown embed endpoint) ----
+// ---- waitlist form (saved via /api/waitlist -> Buttondown API) ----
 const form = document.getElementById("waitlist-form") as HTMLFormElement | null;
 if (form) {
   const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
@@ -105,9 +105,9 @@ if (form) {
     if ((form.elements.namedItem("website") as HTMLInputElement).value) return say(true, t.success!);
     submit.disabled = true;
     try {
-      // no-cors: Buttondown's embed endpoint sends no CORS headers, so the reply is opaque.
-      // A resolved request means it was delivered; a network failure throws.
-      await fetch(t.endpoint!, { method: "POST", mode: "no-cors", body: new URLSearchParams({ email: v, embed: "1" }) });
+      const res = await fetch("/api/waitlist", { method: "POST", body: new FormData(form) });
+      if (res.status === 400) return say(false, t.errorInvalid!);
+      if (!res.ok) throw new Error(String(res.status));
       say(true, t.success!);
       form.reset();
     } catch {

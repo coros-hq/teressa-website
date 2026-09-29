@@ -2,14 +2,12 @@
 import Button from "./Button.astro";
 import { copy } from "../data/copy";
 const c = copy.cta;
-const username = import.meta.env.PUBLIC_BUTTONDOWN_USERNAME ?? "teressa";
-const endpoint = `https://buttondown.com/api/emails/embed-subscribe/${username}`;
 ---
 <section id="waitlist" class="cta">
   <div class="wrap">
     <h2 data-split>{c.title}</h2>
     <p class="lead" data-fade>{c.body}</p>
-    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed} data-endpoint={endpoint}>
+    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed}>
       <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp" />
       <label class="sr" for="waitlist-email">{c.label}</label>
       <input class="input" id="waitlist-email" name="email" type="email" autocomplete="email" placeholder={c.placeholder} aria-describedby="waitlist-msg" />

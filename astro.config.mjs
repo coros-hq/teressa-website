@@ -1,5 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel';
 
-// Fully static site: deploys to Vercel with no adapter.
-export default defineConfig({});
+// Pages stay static; only /api/waitlist runs as a Vercel function (it holds the Buttondown API key).
+export default defineConfig({
+  adapter: vercel(),
+});
