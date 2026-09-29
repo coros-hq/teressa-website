@@ -121,7 +121,7 @@ export const copy = {
     placeholder: "you@example.com",
     button: "Join the waitlist",
     loading: "Joining…",
-    note: "One email when we open. Nothing else.",
+    note: "Be among the first to publish a component.",
     errorEmpty: "Enter your email address.",
     errorInvalid: "That doesn't look like an email address. Check it and try again.",
     errorBlocked: "We couldn't add that address. Try a different email.",
