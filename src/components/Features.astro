@@ -57,9 +57,8 @@ const checks = f.rows[1].bullets;
               <div class="window-bar"><span>Publish checklist</span><span class="badge p" style="margin-left:auto">MIT</span></div>
               <ul class="checks">
                 {checks.map((c, n) => <li data-step={n + 1}><span class="tick">✓</span>{c}</li>)}
-                <li data-step="5"><span class="tick">✓</span>I confirm this component is human-made</li>
               </ul>
-              <div class="publish"><span class="pv-btn" data-step="6">Publish component</span></div>
+              <div class="publish"><span class="pv-btn" data-step="5">Publish component</span></div>
             </div>
           )}
           {r.id === "browse" && (
@@ -70,7 +69,7 @@ const checks = f.rows[1].bullets;
                   <div class="tile"><div class="thumb" style={`--k:${n}`}></div><span>{g}</span></div>
                 ))}
               </div>
-              <div class="install mono"><span>npx shadcn add &lt;url&gt;</span><span class="pill">Copy</span><span class="pill">Fork</span></div>
+              <div class="install mono"><span>Install with one command</span><span class="pill">Copy</span><span class="pill">Fork</span></div>
             </div>
           )}
           {r.id === "feedback" && (
