@@ -105,7 +105,11 @@ if (form) {
     if ((form.elements.namedItem("website") as HTMLInputElement).value) return say(true, t.success!);
     submit.disabled = true;
     try {
-      const res = await fetch("/api/waitlist", { method: "POST", body: new FormData(form) });
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: v, website: (form.elements.namedItem("website") as HTMLInputElement).value }),
+      });
       if (res.status === 400) return say(false, t.errorInvalid!);
       if (!res.ok) throw new Error(String(res.status));
       say(true, t.success!);
