@@ -2,4 +2,4 @@
 import { defineConfig } from 'astro/config';
 
 // Fully static build. The waitlist endpoint is a plain Vercel function in /api/waitlist.js.
-export default defineConfig({});
+export default defineConfig({ site: 'https://teressa-website.vercel.app' });
