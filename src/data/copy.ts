@@ -128,6 +128,7 @@ export const copy = {
     button: "Join the waitlist",
     errorEmpty: "Enter your email address.",
     errorInvalid: "That doesn't look like an email address. Check it and try again.",
+    errorBlocked: "We couldn't add that address. Try a different email.",
     errorFailed: "Something went wrong and your email wasn't sent. Try again in a moment.",
     success: "You're on the list. We'll email you once when Teressa opens.",
   },

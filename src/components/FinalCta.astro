@@ -7,7 +7,7 @@ const c = copy.cta;
   <div class="wrap">
     <h2 data-split>{c.title}</h2>
     <p class="lead" data-fade>{c.body}</p>
-    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed}>
+    <form id="waitlist-form" novalidate data-fade data-error-empty={c.errorEmpty} data-error-invalid={c.errorInvalid} data-success={c.success} data-error-failed={c.errorFailed} data-error-blocked={c.errorBlocked}>
       <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp" />
       <label class="sr" for="waitlist-email">{c.label}</label>
       <input class="input" id="waitlist-email" name="email" type="email" autocomplete="email" placeholder={c.placeholder} aria-describedby="waitlist-msg" />

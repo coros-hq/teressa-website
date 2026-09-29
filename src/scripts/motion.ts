@@ -111,6 +111,7 @@ if (form) {
         body: JSON.stringify({ email: v, website: (form.elements.namedItem("website") as HTMLInputElement).value }),
       });
       if (res.status === 400) return say(false, t.errorInvalid!);
+      if (res.status === 403) return say(false, t.errorBlocked!);
       if (!res.ok) throw new Error(String(res.status));
       say(true, t.success!);
       form.reset();
