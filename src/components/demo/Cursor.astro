@@ -1,0 +1,23 @@
+---
+// A labeled collaborator cursor, positioned inside the card frame (in %), drifting slowly.
+interface Props { name: string; color: string; x: string; y: string; drift: "a" | "b" }
+const { name, color, x, y, drift } = Astro.props;
+---
+<span class={`cursor drift-${drift}`} style={`--who:${color};--x:${x};--y:${y}`}>
+  <svg viewBox="0 0 16 20" aria-hidden="true"><path d="M1.5 1.2 14 8.6l-5.4 1.5-2.4 5.6z" fill="currentColor" stroke="var(--background)" stroke-width="1.2" stroke-linejoin="round" /></svg>
+  <span class="tag">{name}</span>
+</span>
+
+<style>
+  .cursor { position: absolute; left: var(--x); top: var(--y); z-index: 3; color: var(--who); pointer-events: none; display: flex; align-items: flex-start; opacity: 0; transition: opacity .4s; }
+  :global([data-stage="1"]) .cursor, :global([data-stage="3"]) .cursor { opacity: 1; }
+  .cursor svg { width: max(11px, 1.05em); height: auto; aspect-ratio: 4 / 5; flex: none; filter: drop-shadow(0 1px 2px color-mix(in srgb, black 30%, transparent)); }
+  .tag { margin: 1.1em 0 0 -.2em; background: var(--who); color: white; font: 600 max(9px, .72em) var(--font-sans); padding: .15em .6em; border-radius: 99px; white-space: nowrap; line-height: 1.5; }
+  @media (prefers-reduced-motion: no-preference) {
+    .drift-a { animation: drift-a 15s ease-in-out infinite; }
+    .drift-b { animation: drift-b 18s ease-in-out infinite; }
+  }
+  @keyframes drift-a { 0%, 100% { translate: 0 0; } 30% { translate: 3.2em -1.1em; } 62% { translate: -1.2em 1.4em; } }
+  @keyframes drift-b { 0%, 100% { translate: 0 0; } 28% { translate: -2.6em -1.6em; } 60% { translate: .6em 1.7em; } }
+  @media (prefers-reduced-motion: reduce) { .cursor { transition: none; } }
+</style>

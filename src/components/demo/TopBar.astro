@@ -1,0 +1,48 @@
+---
+// Window chrome. Purely illustrative: the Light/Dark pills follow the demo's data-pv, and the
+// file name / badge swap when the story reaches the published page.
+---
+<div class="bar">
+  <span class="dots"><i></i><i></i><i></i></span>
+  <span class="where mono">
+    <span class="at at-file">notification-card.tsx</span>
+    <span class="at at-page">teressa.example/c/notification-card</span>
+  </span>
+  <span class="status">
+    <span class="badge s at at-file">● Autosaved</span>
+    <span class="badge p at at-page">● Published</span>
+  </span>
+  <div class="right">
+    <span class="invite">+ Invite</span>
+    <span class="avatars"><b style="--who:var(--who-a)">A</b><b style="--who:var(--who-b)">S</b></span>
+    <span class="toggle"><span class="pill pv-light">Light</span><span class="pill pv-dark">Dark</span></span>
+  </div>
+</div>
+
+<style>
+  .bar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border); font: 400 12px var(--font-mono); color: var(--muted-foreground); min-width: 0; }
+  .where, .status { display: grid; align-items: center; min-width: 0; }
+  .badge { white-space: nowrap; }
+  .at { grid-area: 1 / 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .4s; }
+  .badge.at { justify-self: start; }
+  .at-page { opacity: 0; visibility: hidden; }
+  :global([data-stage="3"]) .at-file { opacity: 0; visibility: hidden; }
+  :global([data-stage="3"]) .at-page { opacity: 1; visibility: visible; }
+  .right { margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none; }
+  .invite { border: 1px dashed var(--input); border-radius: 99px; padding: 2px 10px; font-size: 11px; opacity: 0; transition: opacity .4s; }
+  :global([data-stage="1"]) .invite { opacity: 1; }
+  .avatars { display: flex; }
+  .avatars b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 10px var(--font-sans); color: white; background: var(--who); box-shadow: 0 0 0 2px var(--card); }
+  .avatars b + b { margin-left: -6px; }
+  .toggle { display: flex; gap: 4px; }
+  .pill { transition: background-color .3s, color .3s, border-color .3s; }
+  :global([data-pv="light"]) .pv-light, :global([data-pv="dark"]) .pv-dark { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-live="true"][data-stage="1"]) .avatars b { animation: pop-in .4s var(--ease) 3.8s backwards; }
+    :global([data-live="true"][data-stage="1"]) .invite { animation: pop-in .4s var(--ease) 3.5s backwards; }
+  }
+  @keyframes pop-in { from { opacity: 0; scale: .6; } }
+  @media (max-width: 700px) { .dots, .avatars, .invite { display: none; } }
+  @media (max-width: 480px) { .bar { padding: 9px 10px; gap: 8px; } .where { display: none; } .status .at { font-size: 10.5px; } }
+  @media (prefers-reduced-motion: reduce) { .at, .invite, .pill { transition: none; } }
+</style>

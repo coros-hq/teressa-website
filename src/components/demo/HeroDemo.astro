@@ -1,0 +1,179 @@
+---
+// The hero visual: one window, one component, three stages (Design, Publish, Get feedback) on a loop.
+// State lives in data attributes on the root (stage, pv theme, live, auto, paused); the
+// stage components only style themselves from those, and the script below drives them.
+import StageIndicator from "./StageIndicator.astro";
+import TopBar from "./TopBar.astro";
+import Preview from "./Preview.astro";
+import DesignStage from "./DesignStage.astro";
+import PublishStage from "./PublishStage.astro";
+import FeedbackStage from "./FeedbackStage.astro";
+---
+<figure
+  class="demo" data-demo data-stage="1" data-pv="light" data-auto="true" data-paused="true"
+  role="group" aria-label="Illustration of the Teressa workflow: design a component, publish it, and receive feedback"
+>
+  <StageIndicator />
+  <div class="window" aria-hidden="true">
+    <TopBar />
+    <div class="body">
+      <Preview />
+      <DesignStage />
+      <PublishStage />
+      <FeedbackStage />
+    </div>
+  </div>
+  <figcaption class="mono">A mock-up of the editor. Teressa hasn't launched yet.</figcaption>
+</figure>
+
+<style>
+  .demo {
+    max-width: 1080px; margin: 0 auto;
+    --who-a: color-mix(in srgb, var(--primary) 78%, black);
+    --who-b: color-mix(in srgb, var(--secondary) 85%, black);
+    --who-c: color-mix(in srgb, var(--primary) 50%, black);
+    /* preview themes, independent of the page theme */
+    --pv-bg: white;
+    --pv-fg: color-mix(in srgb, black 88%, white);
+    --pv-muted: color-mix(in srgb, black 55%, white);
+    --pv-line: color-mix(in srgb, black 12%, transparent);
+    --pv-shadow: color-mix(in srgb, black 22%, transparent);
+  }
+  .demo[data-pv="dark"] {
+    --pv-bg: color-mix(in srgb, white 8%, black);
+    --pv-fg: color-mix(in srgb, white 94%, black);
+    --pv-muted: color-mix(in srgb, white 60%, black);
+    --pv-line: color-mix(in srgb, white 12%, transparent);
+    --pv-shadow: color-mix(in srgb, black 60%, transparent);
+  }
+  .window { min-width: 0; }
+  .body {
+    display: grid; grid-template-columns: minmax(0, .2fr) minmax(0, .6fr) minmax(0, .2fr); min-height: 440px; position: relative;
+    transition: grid-template-columns .7s var(--ease);
+  }
+  .demo[data-stage="2"] .body, .demo[data-stage="3"] .body { grid-template-columns: minmax(0, .5fr) minmax(0, .5fr) minmax(0, 0fr); }
+  /* stages share the grid; only the active one is visible (each stage sets its own cell) */
+  .body :global(.stage) {
+    opacity: 0; visibility: hidden; pointer-events: none; translate: 0 8px;
+    transition: opacity .45s, translate .45s var(--ease), visibility 0s .45s;
+  }
+  .demo[data-stage="1"] .body :global(.s1), .demo[data-stage="2"] .body :global(.s2), .demo[data-stage="3"] .body :global(.s3) {
+    opacity: 1; visibility: visible; translate: 0 0; transition-delay: 0s;
+  }
+  /* the canvas is the constant: centre column while designing, then it makes room for each next stage */
+  .body > :global(.preview) { grid-row: 1; grid-column: 2; }
+  .demo[data-stage="3"] .body > :global(.preview) { translate: -100% 0; }
+  figcaption { text-align: center; font-size: 12px; color: var(--muted-foreground); margin-top: 14px; }
+
+  @media (max-width: 700px) {
+    .demo[data-stage] .body { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .body > :global(.preview) { grid-column: 1; border-bottom: 1px solid var(--border); }
+    .demo[data-stage="3"] .body > :global(.preview) { translate: 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .body, .body :global(.stage) { transition: none; }
+    .body :global(.stage) { translate: 0 0; }
+  }
+</style>
+
+<script>
+  // Stage controller: auto-advance, pause on hover/focus/off-screen, step buttons, and the stage-1 design edit.
+  const root = document.querySelector<HTMLElement>("[data-demo]");
+  if (root) {
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const DUR = [5200, 5600, 6600]; // ms per stage
+    const IDLE_RESUME = 9000; // after a manual pick, auto-play picks back up when nobody touches it
+    const steps = [...root.querySelectorAll<HTMLButtonElement>("[data-step-btn]")];
+    const radiusVal = root.querySelector<HTMLElement>("[data-radius-val]");
+    const indicator = root.querySelector<HTMLElement>(".steps");
+
+    let stage = 1;
+    let auto = !reduce;
+    let inView = false, hovered = false, focused = false, started = false;
+    let timer = 0, startedAt = 0, remaining = DUR[0], resumeTimer = 0;
+    const beats: number[] = [];
+
+    const at = (ms: number, fn: () => void) => beats.push(window.setTimeout(fn, ms));
+    const clearBeats = () => { beats.forEach(clearTimeout); beats.length = 0; };
+
+    // Per-stage scripted state (CSS handles the rest of the choreography from data-stage).
+    const choreograph = (n: number) => {
+      clearBeats();
+      // corner radius is the design edit: the card and the Radius field change together
+      const setRadius = (px: number) => {
+        root.style.setProperty("--r", String(px / 14));
+        if (radiusVal) radiusVal.textContent = String(px);
+      };
+      if (n === 1) root.dataset.pv = "light";
+      if (n !== 1 || reduce) return setRadius(24);
+      setRadius(16);
+      [18, 20, 22, 24].forEach((px, i) => at(1000 + i * 170, () => setRadius(px)));
+      at(3000, () => (root.dataset.pv = "dark"));
+    };
+
+    const sync = () => {
+      const run = auto && started && inView && !hovered && !focused && !document.hidden;
+      root.dataset.paused = String(!run);
+      if (run && !timer) {
+        startedAt = performance.now();
+        timer = window.setTimeout(() => { timer = 0; go(stage % 3 + 1); }, remaining);
+      } else if (!run && timer) {
+        clearTimeout(timer); timer = 0;
+        remaining = Math.max(400, remaining - (performance.now() - startedAt));
+      }
+    };
+
+    const go = (n: number, manual = false) => {
+      clearTimeout(timer); timer = 0;
+      stage = n;
+      remaining = DUR[n - 1];
+      clearTimeout(resumeTimer);
+      if (manual) {
+        auto = false; root.dataset.auto = "false";
+        if (!reduce) resumeTimer = window.setTimeout(() => {
+          auto = true; root.dataset.auto = "true";
+          remaining = DUR[stage - 1];
+          root.style.setProperty("--dur", remaining + "ms");
+          sync();
+        }, IDLE_RESUME);
+      }
+      root.style.setProperty("--dur", remaining + "ms");
+      // drop and re-add `live` so the stage's CSS animations restart, even when re-selecting the same stage
+      delete root.dataset.live;
+      void root.offsetWidth;
+      root.dataset.stage = String(n);
+      if (!reduce) root.dataset.live = "true";
+      steps.forEach((b, i) => (i + 1 === n ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current")));
+      choreograph(n);
+      sync();
+    };
+
+    if (reduce) root.dataset.auto = "false";
+    steps.forEach((b, i) => {
+      b.addEventListener("click", () => go(i + 1, true));
+      b.addEventListener("keydown", (e) => {
+        const moves: Record<string, number> = { ArrowRight: (i + 1) % 3, ArrowDown: (i + 1) % 3, ArrowLeft: (i + 2) % 3, ArrowUp: (i + 2) % 3, Home: 0, End: 2 };
+        const to = moves[e.key];
+        if (to === undefined) return;
+        e.preventDefault();
+        steps[to].focus();
+        go(to + 1, true);
+      });
+    });
+
+    // Pause while someone is on the step buttons (mouse over them, or keyboard focus on them). A mouse
+    // resting over the picture itself does not freeze the story.
+    indicator?.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") { hovered = true; sync(); } });
+    indicator?.addEventListener("pointerleave", () => { hovered = false; sync(); });
+    const trackFocus = () => { focused = !!root.querySelector(":focus-visible"); sync(); };
+    root.addEventListener("focusin", trackFocus);
+    root.addEventListener("focusout", () => setTimeout(trackFocus, 0));
+    document.addEventListener("visibilitychange", sync);
+
+    // start the story the first time it scrolls into view
+    new IntersectionObserver(([e]) => {
+      inView = e.isIntersecting;
+      if (inView && !started) { started = true; go(1); } else sync();
+    }, { threshold: 0.3 }).observe(root);
+  }
+</script>

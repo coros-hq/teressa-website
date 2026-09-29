@@ -1,6 +1,6 @@
 ---
 import WaitlistForm from "./WaitlistForm.astro";
-import EditorMock from "./EditorMock.astro";
+import HeroDemo from "./demo/HeroDemo.astro";
 import { copy } from "../data/copy";
 const h = copy.hero;
 ---
@@ -14,7 +14,7 @@ const h = copy.hero;
     <WaitlistForm source="hero" />
     <p class="row"><a class="text-link" href="#how">{h.secondary}</a></p>
   </div>
-  <div class="wrap visual" data-fade style="--d:.2s"><EditorMock /></div>
+  <div class="wrap visual" data-fade style="--d:.2s"><HeroDemo /></div>
 </header>
 
 <style>

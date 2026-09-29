@@ -1,0 +1,41 @@
+---
+// The three steps. Real buttons: click/tap to jump, arrow keys to move, Enter/Space to select.
+// The parent script sets aria-current and drives the progress line.
+const steps = ["Design", "Publish", "Get feedback"];
+---
+<ol class="steps">
+  {steps.map((label, i) => (
+    <li>
+      <button type="button" class="step" data-step-btn={i + 1} aria-current={i === 0 ? "step" : undefined}>
+        <span class="n">{i + 1}</span><span class="t">{label}</span>
+      </button>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 16px; padding: 0; list-style: none; }
+  .step {
+    position: relative; width: 100%; display: flex; align-items: center; gap: 10px; padding: 14px 4px 4px;
+    background: none; border: 0; color: var(--muted-foreground); font: 500 15px var(--font-sans); cursor: pointer; text-align: left;
+    transition: color .3s; border-radius: 6px;
+  }
+  .step:hover { color: var(--foreground); }
+  .step::before, .step::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; border-radius: 2px; }
+  .step::before { background: var(--border); }
+  .step::after { background: var(--foreground); transform-origin: left; scale: 0 1; }
+  .n { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 500 12px var(--font-mono); border: 1px solid var(--input); transition: background-color .3s, color .3s, border-color .3s; }
+  .t { min-width: 0; }
+  .step[aria-current="step"] { color: var(--foreground); }
+  .step[aria-current="step"] .n { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .step[aria-current="step"]::after { scale: 1 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-live="true"][data-auto="true"]) .step[aria-current="step"]::after { scale: 0 1; animation: fill var(--dur, 5s) linear forwards; }
+    :global([data-paused="true"]) .step[aria-current="step"]::after { animation-play-state: paused; }
+  }
+  @keyframes fill { to { scale: 1 1; } }
+  @media (max-width: 560px) {
+    .step { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 13px; padding-top: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .step, .n { transition: none; } }
+</style>

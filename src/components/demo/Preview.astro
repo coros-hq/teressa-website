@@ -1,0 +1,70 @@
+---
+// The persistent canvas: the same NotificationCard in every stage. Theme and corner radius follow
+// data-pv / --r on the demo root. Stage 1 adds the selection frame, stage 1 and 3 add live cursors,
+// stage 3 adds a comment on the card.
+import Cursor from "./Cursor.astro";
+---
+<div class="preview">
+  <div class="frame">
+    <div class="nc">
+      <svg class="av" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="20" fill="currentColor" opacity=".14" />
+        <circle cx="20" cy="15.5" r="6.5" fill="currentColor" opacity=".55" />
+        <path d="M6.5 34c1.6-6.2 7-9.2 13.5-9.2s11.9 3 13.5 9.2A20 20 0 0 1 6.5 34z" fill="currentColor" opacity=".55" />
+      </svg>
+      <div class="tx">
+        <p class="nt">New Comment</p>
+        <p class="ns">From DesignGuru22</p>
+      </div>
+      <span class="na">Mark As Read</span>
+    </div>
+    <div class="sel">
+      <i class="h tl"></i><i class="h tr"></i><i class="h bl"></i><i class="h br"></i>
+      <span class="size">384 × 72</span>
+    </div>
+    <Cursor name="Ari" color="var(--who-a)" x="47%" y="28%" drift="a" />
+    <Cursor name="Sol" color="var(--who-b)" x="82%" y="78%" drift="b" />
+  </div>
+  <div class="note">
+    <span class="dot">A</span>
+    <span class="msg">Corners feel friendlier now</span>
+  </div>
+</div>
+
+<style>
+  .preview {
+    position: relative; min-width: 0; container-type: inline-size; display: grid; place-items: center; padding: 24px 12px;
+    background-color: var(--background); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 16px 16px;
+    transition: translate .7s var(--ease);
+  }
+  .frame { position: relative; font-size: clamp(8px, 3cqi, 16px); width: 27.4em; max-width: 100%; }
+  .nc {
+    height: 5.14em; display: flex; align-items: center; gap: .85em; padding: 0 1em;
+    border: 1px solid var(--pv-line); border-radius: calc(var(--r, 1.7) * 1em); background: var(--pv-bg); color: var(--pv-fg);
+    box-shadow: 0 1.2em 2.4em -1.2em var(--pv-shadow);
+    transition: background-color .5s, color .5s, border-color .5s, box-shadow .5s, border-radius .3s var(--ease);
+  }
+  .av { width: 2.65em; height: 2.65em; flex: none; }
+  .tx { display: grid; gap: .1em; min-width: 0; }
+  .nt { font-weight: 600; font-size: 1.1em; line-height: 1.2; letter-spacing: -.01em; white-space: nowrap; }
+  .ns { font-size: .78em; color: var(--pv-muted); white-space: nowrap; transition: color .5s; }
+  .na { margin-left: auto; flex: none; background: var(--primary); color: var(--primary-foreground); font-size: .8em; font-weight: 600; padding: .62em 1.15em; border-radius: .55em; white-space: nowrap; }
+  /* selection frame: stage 1 only */
+  .sel { position: absolute; inset: -.55em -.6em; border: 1.5px solid var(--secondary); border-radius: .4em; pointer-events: none; opacity: 0; transition: opacity .4s; }
+  :global([data-stage="1"]) .sel { opacity: 1; }
+  .h { position: absolute; width: .6em; height: .6em; min-width: 6px; min-height: 6px; background: var(--background); border: 1.5px solid var(--secondary); border-radius: 2px; }
+  .tl { left: 0; top: 0; translate: -50% -50%; } .tr { right: 0; top: 0; translate: 50% -50%; }
+  .bl { left: 0; bottom: 0; translate: -50% 50%; } .br { right: 0; bottom: 0; translate: 50% 50%; }
+  .size { position: absolute; left: 50%; top: 100%; translate: -50% .55em; background: var(--secondary); color: var(--secondary-foreground); font: 500 max(9px, .74em) var(--font-mono); padding: .2em .7em; border-radius: .4em; white-space: nowrap; }
+  /* comment on the card: stage 3 only */
+  .note { position: absolute; right: 6%; top: 14%; display: flex; align-items: center; gap: 6px; opacity: 0; visibility: hidden; transition: opacity .4s, visibility 0s .4s; }
+  :global([data-stage="3"]) .note { opacity: 1; visibility: visible; transition-delay: 0s; }
+  .dot { width: 20px; height: 20px; flex: none; border-radius: 50% 50% 50% 3px; display: grid; place-items: center; background: var(--who-a); color: white; font: 600 10px var(--font-sans); box-shadow: 0 0 0 2px var(--background); }
+  .msg { background: var(--popover); color: var(--foreground); border: 1px solid var(--border); border-radius: 3px 9px 9px 9px; padding: 3px 9px; font-size: 11.5px; line-height: 1.4; white-space: nowrap; box-shadow: 0 8px 20px -12px color-mix(in srgb, black 45%, transparent); }
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-live="true"][data-stage="3"]) .note { animation: note-in .45s var(--ease) 1.6s backwards; }
+  }
+  @keyframes note-in { from { opacity: 0; translate: 0 6px; scale: .92; } }
+  @media (max-width: 700px) { .preview { padding: 34px 10px 30px; } .note { top: 8px; right: 4%; } .msg { font-size: 10.5px; } }
+  @media (prefers-reduced-motion: reduce) { .nc, .ns, .preview, .sel, .note { transition: none; } }
+</style>
