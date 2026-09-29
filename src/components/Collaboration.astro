@@ -1,0 +1,97 @@
+---
+// Realtime collaboration: a shared file with two live cursors, a shared preview and a side chat.
+// The illustration is decorative; the same information is in the text around it.
+import { copy } from "../data/copy";
+const c = copy.collab;
+const lines: [number, string][] = [
+  [12, `    &lt;<span class="k">Button</span> <span class="c">size</span>=<span class="s">"sm"</span>`],
+  [13, `      <span class="c">className</span>=<span class="s">"ring-2 </span><span class="sel ari">ring-offset-2</span><span class="s">"</span><span class="cur ari"><em>Ari</em></span>`],
+  [14, `      <span class="c">variant</span>=<span class="s">"</span><span class="sel sol">default</span><span class="s">"</span><span class="cur sol"><em>Sol</em></span>`],
+  [15, `    &gt;Mark As Read&lt;/<span class="k">Button</span>&gt;`],
+];
+---
+<section id="collaborate" class="section">
+  <div class="wrap">
+    <p class="eyebrow blue" data-fade>{c.eyebrow}</p>
+    <h2 class="title" data-split>{c.title}</h2>
+    <p class="lead" data-fade>{c.body}</p>
+
+    <div class="window session" data-fade style="--d:.15s" data-assemble data-gap="1100" aria-hidden="true">
+      <div class="window-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="file">notification-card.tsx</span>
+        <span class="live"><i></i>Live</span>
+        <span class="who"><span class="av ari">A</span><span class="av sol">S</span></span>
+      </div>
+      <div class="cols">
+        <pre class="code">{lines.map(([n, l]) => <span class="row"><span class="ln">{n}</span><span class="src"><Fragment set:html={l} /></span></span>)}</pre>
+        <div class="prev">
+          <span class="mono cap">Shared preview</span>
+          <div class="pv"><span class="pv-btn">Mark As Read</span></div>
+        </div>
+        <div class="chat">
+          <span class="mono cap">Chat</span>
+          {c.chat.map((m, i) => (
+            <p class:list={["msg", m.who === "Ari" ? "ari" : "sol"]} data-step={i + 1}><b>{m.who}</b>{m.msg}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <ul class="points">
+      {c.points.map((p, i) => (
+        <li data-fade style={`--d:${i * 0.1}s`}><strong>{p.t}</strong><span>{p.d}</span></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section { --who-a: color-mix(in srgb, var(--primary) 78%, black); --who-b: color-mix(in srgb, var(--secondary) 85%, black); }
+  .lead { margin-bottom: 48px; }
+  .session { max-width: 1080px; margin: 0 auto; }
+  .file { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .live { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; }
+  .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  .who { display: flex; }
+  .av { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 10px var(--font-sans); color: white; box-shadow: 0 0 0 2px var(--card); }
+  .av.ari { background: var(--who-a); } .av.sol { background: var(--who-b); margin-left: -6px; }
+  .cols { display: grid; grid-template-columns: 1.5fr 1fr 1fr; min-height: 300px; }
+  .code { padding: 18px 8px 18px 6px; border-right: 1px solid var(--border); min-width: 0; overflow: hidden; }
+  .row { display: flex; }
+  .src { min-width: 0; white-space: pre; }
+  /* these live inside injected code HTML, so they need :global */
+  :global(.session .sel) { border-radius: 3px; padding: 0 2px; }
+  :global(.session .sel.ari) { background: color-mix(in srgb, var(--primary) 30%, transparent); }
+  :global(.session .sel.sol) { background: color-mix(in srgb, var(--secondary) 35%, transparent); }
+  :global(.session .cur) { display: inline-block; width: 2px; height: 1.2em; vertical-align: text-bottom; margin-left: 1px; position: relative; }
+  :global(.session .cur.ari) { background: var(--who-a); } :global(.session .cur.sol) { background: var(--who-b); }
+  :global(.session .cur em) { position: absolute; left: calc(100% + 4px); top: 50%; translate: 0 -50%; font: 500 10px var(--font-mono); font-style: normal; color: white; padding: 1px 6px; border-radius: 0 4px 4px 4px; white-space: nowrap; line-height: 1.5; }
+  :global(.session .cur.ari em) { background: var(--who-a); } :global(.session .cur.sol em) { background: var(--who-b); }
+  .prev, .chat { padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .prev { border-right: 1px solid var(--border); background-color: var(--background); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 16px 16px; }
+  .cap { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .1em; }
+  .pv { flex: 1; display: grid; place-items: center; }
+  .pv-btn { background: var(--primary); color: var(--primary-foreground); font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: 7px; outline: 2px solid var(--ring); outline-offset: 3px; }
+  .msg { font-size: 13px; line-height: 1.4; border-radius: 12px; padding: 8px 12px; background: var(--muted); }
+  .msg b { display: block; font: 500 10px var(--font-mono); margin-bottom: 2px; }
+  .msg.ari b { color: var(--primary-ink); } .msg.sol b { color: var(--secondary-ink); }
+  .points { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); margin: 56px auto 0; max-width: 1080px; }
+  .points li { padding: 24px 28px 0 0; display: grid; gap: 6px; align-content: start; }
+  .points li + li { padding-left: 28px; border-left: 1px solid var(--border); }
+  .points strong { font-size: 20px; font-weight: 500; letter-spacing: -.01em; }
+  .points span { color: var(--muted-foreground); font-weight: 300; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.session .cur) { animation: blink 1.1s steps(2) infinite; } :global(.session .cur.sol) { animation-delay: .4s; }
+    .live i { animation: pulse 2.4s ease-out infinite; }
+  }
+  @keyframes blink { 50% { opacity: .25; } }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
+  @media (max-width: 860px) {
+    .cols { grid-template-columns: minmax(0, 1fr); }
+    .code, .prev { border-right: 0; border-bottom: 1px solid var(--border); }
+    .code { font-size: 11px; } .prev { min-height: 120px; }
+    .points { grid-template-columns: 1fr; margin-top: 40px; }
+    .points li, .points li + li { padding: 20px 0 0; border-left: 0; }
+  }
+</style>

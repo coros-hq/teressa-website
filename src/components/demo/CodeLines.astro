@@ -1,0 +1,23 @@
+---
+// A tiny code listing. The radius value is the live edit in the Design stage; `mark` highlights
+// the line that gets a comment in the feedback stage.
+interface Props { mark?: boolean }
+const { mark = false } = Astro.props;
+---
+<pre class="code mono" aria-hidden="true"><span class="ln"><i>1</i>&lt;Card</span>
+<span class="ln"><i>2</i>  title="New Comment"</span>
+<span class:list={["ln", { mark }]}><i>3</i>  radius=&#123;<b data-radius-val>24</b>&#125;</span>
+<span class="ln"><i>4</i>  action="Mark As Read"</span>
+<span class="ln"><i>5</i>/&gt;</span></pre>
+
+<style>
+  .code { margin: 0; font-size: 12.5px; line-height: 1.9; color: var(--foreground); white-space: pre; overflow: hidden; }
+  .ln { display: block; padding: 0 8px; border-radius: 6px; }
+  .ln i { display: inline-block; width: 2ch; margin-right: 12px; font-style: normal; color: var(--muted-foreground); text-align: right; }
+  .ln b { font-weight: 500; }
+  .ln.mark { background: color-mix(in srgb, var(--primary) 14%, transparent); box-shadow: inset 2px 0 0 var(--primary); }
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-live="true"][data-stage="1"]) .ln b { animation: flash .5s 1s; }
+  }
+  @keyframes flash { 40% { color: var(--secondary-ink); } }
+</style>

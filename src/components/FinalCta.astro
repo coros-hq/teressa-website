@@ -6,7 +6,6 @@ const c = copy.cta;
 <section id="waitlist" class="cta">
   <div class="wrap">
     <h2 data-split>{c.title}</h2>
-    <p class="lead" data-fade>{c.body}</p>
     <div data-fade><WaitlistForm source="footer" center /></div>
   </div>
 </section>
@@ -14,6 +13,5 @@ const c = copy.cta;
 <style>
   .cta { padding: 150px 0; text-align: center; position: relative; overflow: hidden; }
   .cta::before { content: ""; position: absolute; inset: auto -10% -70% -10%; height: 90%; background: radial-gradient(ellipse at 35% 50%, color-mix(in srgb, var(--primary) 40%, transparent), transparent 60%), radial-gradient(ellipse at 70% 50%, color-mix(in srgb, var(--secondary) 40%, transparent), transparent 60%); pointer-events: none; }
-  h2 { font-size: clamp(38px, 6.6vw, 96px); letter-spacing: -.045em; line-height: 1; font-weight: 400; max-width: 10em; margin: 0 auto 22px; }
-  .lead { margin: 0 auto 34px; }
+  h2 { font-size: clamp(38px, 6.6vw, 96px); letter-spacing: -.045em; line-height: 1; font-weight: 400; max-width: 10em; margin: 0 auto 34px; }
 </style>

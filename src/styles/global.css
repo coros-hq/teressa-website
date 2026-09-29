@@ -1,4 +1,4 @@
-/* Tokens use shadcn/ui's CSS variable names so components map 1:1 to the system. */
+/* Color and radius variables. */
 :root {
   --background: #f4f4f1;
   --foreground: #141414;
@@ -63,7 +63,7 @@ ul { list-style: none; padding: 0; }
 .text-link { text-decoration: none; border-bottom: 1px solid var(--input); padding-bottom: 2px; transition: border-color .3s, color .3s; }
 .text-link:hover { border-color: var(--primary); color: var(--primary-ink); }
 
-/* small shadcn-style primitives */
+/* small shared primitives */
 .badge { display: inline-flex; align-items: center; gap: 6px; font: 500 11px var(--font-mono); border: 1px solid var(--border); border-radius: 99px; padding: 2px 9px; color: var(--muted-foreground); }
 .badge.p { color: var(--primary-ink); border-color: color-mix(in srgb, var(--primary) 45%, transparent); }
 .badge.s { color: var(--secondary-ink); border-color: color-mix(in srgb, var(--secondary) 45%, transparent); }

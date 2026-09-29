@@ -89,6 +89,8 @@ const tokens: [string, string][] = [["card", "var(--pv-bg)"], ["card-foreground"
   }
   @keyframes flash { 40% { color: var(--secondary-ink); } }
   @keyframes slide-in { from { opacity: 0; translate: -6px 0; } }
+  /* tablet: narrow properties column, keep it to the essentials */
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .snippet-head, .snippet { display: none; } }
   /* phone: no side panels; the properties collapse into a compact row under the canvas */
   @media (max-width: 700px) {
     .layers, .tools, .seg { display: none; }

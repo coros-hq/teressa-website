@@ -4,13 +4,16 @@ const f = copy.footer;
 ---
 <footer>
   <div class="wrap foot">
-    <span>© 2026 {copy.brand}. {f.tag}</span>
+    <span class="brand"><img class="logo-dark" src="/logo-dark.svg" alt="" width="26" height="24" /><img class="logo-light" src="/logo-light.svg" alt="" width="26" height="24" />{copy.brand.toLowerCase()}</span>
+    <span>© 2026 {copy.brand}</span>
     <nav aria-label="Footer">{f.links.map((l) => <a href={l.href}>{l.label}</a>)}</nav>
   </div>
 </footer>
 
 <style>
   footer { border-top: 1px solid var(--border); }
-  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 30px; padding-bottom: 30px; font: 400 12px var(--font-mono); color: var(--muted-foreground); }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 30px; padding-bottom: 30px; font: 400 12px var(--font-mono); color: var(--muted-foreground); }
+  .brand { display: inline-flex; align-items: center; gap: 8px; font: 500 18px var(--font-sans); letter-spacing: -.03em; color: var(--foreground); }
+  .brand img { width: 26px; height: auto; }
   nav { display: flex; gap: 20px; } a { text-decoration: none; } a:hover { color: var(--foreground); }
 </style>

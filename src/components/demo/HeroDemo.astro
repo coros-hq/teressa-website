@@ -11,7 +11,7 @@ import FeedbackStage from "./FeedbackStage.astro";
 ---
 <figure
   class="demo" data-demo data-stage="1" data-pv="light" data-auto="true" data-paused="true"
-  role="group" aria-label="Illustration of the Teressa workflow: design a component, publish it, and receive feedback"
+  role="group" aria-label="Illustration: design a component, publish it, and get feedback"
 >
   <StageIndicator />
   <div class="window" aria-hidden="true">
@@ -48,7 +48,7 @@ import FeedbackStage from "./FeedbackStage.astro";
   }
   .window { min-width: 0; }
   .body {
-    display: grid; grid-template-columns: minmax(0, .2fr) minmax(0, .6fr) minmax(0, .2fr); min-height: 440px; position: relative;
+    display: grid; grid-template-columns: minmax(0, .2fr) minmax(0, .6fr) minmax(0, .2fr); height: 440px; grid-template-rows: minmax(0, 1fr); overflow: hidden; position: relative;
     transition: grid-template-columns .7s var(--ease);
   }
   .demo[data-stage="2"] .body, .demo[data-stage="3"] .body { grid-template-columns: minmax(0, .5fr) minmax(0, .5fr) minmax(0, 0fr); }
@@ -66,7 +66,7 @@ import FeedbackStage from "./FeedbackStage.astro";
   figcaption { text-align: center; font-size: 12px; color: var(--muted-foreground); margin-top: 14px; }
 
   @media (max-width: 700px) {
-    .demo[data-stage] .body { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .demo[data-stage] .body { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; height: auto; overflow: visible; }
     .body > :global(.preview) { grid-column: 1; border-bottom: 1px solid var(--border); }
     .demo[data-stage="3"] .body > :global(.preview) { translate: 0 0; }
   }

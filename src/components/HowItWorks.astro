@@ -4,27 +4,53 @@ const h = copy.how;
 ---
 <section id="how" class="section alt">
   <div class="wrap">
-    <p class="eyebrow" data-fade>{h.eyebrow}</p>
     <h2 class="title" data-split>{h.title}</h2>
     <ol class="steps">
       {h.steps.map((s, i) => (
         <li class="step" data-fade style={`--d:${i * 0.12}s`}>
+          <div class="vis" aria-hidden="true">
+            {i === 0 && (
+              <div class="v-design">
+                <span class="code mono">radius=&#123;24&#125;</span>
+                <span class="card"></span>
+              </div>
+            )}
+            {i === 1 && (
+              <div class="v-publish">
+                <span class="btn-mini">Publish</span>
+                <span class="chip mono">teressa.example/c/card</span>
+              </div>
+            )}
+            {i === 2 && (
+              <div class="v-feedback">
+                <span class="code mono mark">radius=&#123;24&#125;</span>
+                <span class="bub">Try 16?</span>
+              </div>
+            )}
+          </div>
           <span class="n mono">{s.n}</span>
           <h3>{s.title}</h3>
           <p>{s.body}</p>
         </li>
       ))}
     </ol>
-    <p class="pair" data-fade><span class="badge s">Pair sessions</span> {h.pair}</p>
   </div>
 </section>
 
 <style>
   .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); margin-top: 56px; }
   .step { padding: 28px 28px 28px 0; } .step + .step { padding-left: 28px; border-left: 1px solid var(--border); }
+  .vis { height: 112px; display: grid; place-items: center; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 16px 16px; padding: 12px; }
+  .v-design, .v-publish, .v-feedback { display: grid; gap: 10px; justify-items: start; }
+  .v-design { grid-auto-flow: column; align-items: center; gap: 14px; }
+  .code { font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; white-space: nowrap; }
+  .code.mark { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent); }
+  .card { width: 56px; height: 34px; border-radius: 12px; background: white; border: 1px solid var(--border); box-shadow: 0 8px 16px -10px color-mix(in srgb, black 40%, transparent); }
+  .btn-mini { background: var(--primary); color: var(--primary-foreground); font: 600 12px var(--font-sans); padding: 5px 16px; border-radius: 99px; }
+  .chip { font-size: 11px; border: 1px solid var(--input); border-radius: 8px; padding: 3px 9px; white-space: nowrap; }
+  .bub { margin-left: 14px; font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 4px 10px 10px 10px; padding: 4px 10px; }
   .n { font-size: 12px; color: var(--primary-ink); }
   h3 { font-size: 30px; font-weight: 400; letter-spacing: -.025em; margin: 10px 0 12px; }
   .step p { color: var(--muted-foreground); font-weight: 300; max-width: 24em; }
-  .pair { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; color: var(--muted-foreground); }
-  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } .step + .step { padding-left: 0; border-left: 0; border-top: 1px solid var(--border); } }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } .step + .step { padding-left: 0; border-left: 0; border-top: 1px solid var(--border); } .step { padding-right: 0; } }
 </style>
