@@ -69,9 +69,6 @@ ul { list-style: none; padding: 0; }
 .badge.s { color: var(--secondary-ink); border-color: color-mix(in srgb, var(--secondary) 45%, transparent); }
 .input { width: 100%; height: 50px; border-radius: 99px; border: 1px solid var(--input); background: var(--background); color: var(--foreground); padding: 0 20px; font: 400 16px var(--font-sans); }
 .input::placeholder { color: var(--muted-foreground); }
-.form-msg { margin-top: 16px; min-height: 1.5em; font-size: 14px; }
-.form-msg.err { color: var(--primary-ink); }
-.form-msg.ok { color: var(--secondary-ink); font-size: 18px; font-weight: 500; }
 .input[aria-invalid="true"] { border-color: var(--primary); }
 .window { border: 1px solid var(--border); border-radius: 16px; background: var(--card); overflow: hidden; box-shadow: 0 30px 80px -30px color-mix(in srgb, #000 55%, transparent); }
 .window-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font: 400 12px var(--font-mono); color: var(--muted-foreground); }

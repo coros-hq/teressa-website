@@ -102,51 +102,8 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) =>
 
 // ---- analytics (custom events; pageviews come from <Analytics />) ----
 document.addEventListener("click", (e) => {
-  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href="#waitlist"]');
+  const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="https://teressa.vercel.app"]');
   if (a) send("cta_click", { location: a.closest("#nav") ? "nav" : "hero" });
-});
-
-// ---- waitlist forms (hero + footer; saved via /api/waitlist -> Buttondown API) ----
-document.querySelectorAll<HTMLFormElement>("form[data-waitlist]").forEach((form) => {
-  const input = form.querySelector<HTMLInputElement>('input[type="email"]')!;
-  const submit = form.querySelector<HTMLButtonElement>("button")!;
-  const labels = [...submit.querySelectorAll<HTMLElement>(".btn-l")];
-  const idleLabels = labels.map((l) => l.textContent);
-  const msg = form.parentElement!.querySelector<HTMLElement>("[data-waitlist-msg]")!;
-  const t = form.dataset;
-  const source = t.source!;
-  const say = (ok: boolean, text: string) => { msg.className = ok ? "form-msg ok" : "form-msg err"; msg.textContent = text; };
-  const busy = (on: boolean) => { submit.disabled = on; labels.forEach((l, i) => (l.textContent = on ? t.loading! : idleLabels[i])); };
-  input.addEventListener("focus", () => send("waitlist_focus", { source }), { once: true });
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const v = input.value.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-    input.setAttribute("aria-invalid", String(!valid));
-    if (!valid) { send("waitlist_submit", { source, result: "invalid" }); say(false, v ? t.errorInvalid! : t.errorEmpty!); return input.focus(); }
-    // Honeypot: bots fill the hidden field; pretend it worked and send nothing.
-    if ((form.elements.namedItem("website") as HTMLInputElement).value) return say(true, t.success!);
-    busy(true);
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: v, website: (form.elements.namedItem("website") as HTMLInputElement).value }),
-      });
-      if (res.status === 400) { send("waitlist_submit", { source, result: "invalid" }); return say(false, t.errorInvalid!); }
-      if (res.status === 403) { send("waitlist_submit", { source, result: "blocked" }); return say(false, t.errorBlocked!); }
-      if (!res.ok) throw new Error(String(res.status));
-      send("waitlist_submit", { source, result: "success" });
-      say(true, t.success!);
-      form.reset();
-      form.hidden = true;
-    } catch {
-      send("waitlist_submit", { source, result: "error" });
-      say(false, t.errorFailed!);
-    } finally {
-      busy(false);
-    }
-  });
 });
 
 // ---- pixel trail in the hero ----

@@ -1,7 +1,7 @@
 ---
-import WaitlistForm from "./WaitlistForm.astro";
+import Button from "./Button.astro";
 import HeroDemo from "./demo/HeroDemo.astro";
-import { copy } from "../data/copy";
+import { copy, APP_URL } from "../data/copy";
 const h = copy.hero;
 ---
 <header id="hero">
@@ -10,7 +10,7 @@ const h = copy.hero;
   <div class="wrap copy">
     <h1>{h.title}</h1>
     <p class="lead">{h.sub}</p>
-    <WaitlistForm source="hero" />
+    <Button href={APP_URL}>{copy.cta.button}</Button>
   </div>
   <div class="wrap visual" data-fade style="--d:.2s"><HeroDemo /></div>
 </header>

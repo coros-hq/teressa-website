@@ -1,8 +1,10 @@
 // All page copy lives here. Edit text in this file; components only lay it out.
+export const APP_URL = "https://teressa.vercel.app/overview";
+
 export const copy = {
   brand: "Teressa",
   nav: {
-    cta: "Join the waitlist",
+    cta: "Open the app",
   },
   hero: {
     title: "Design UI components. Publish them. Get feedback.",
@@ -33,16 +35,7 @@ export const copy = {
   },
   cta: {
     title: "Be there when we open.",
-    label: "Email address",
-    placeholder: "you@example.com",
-    button: "Join the waitlist",
-    loading: "Joining…",
-    note: "Be among the first to publish a component.",
-    errorEmpty: "Enter your email address.",
-    errorInvalid: "That doesn't look like an email address. Check it and try again.",
-    errorBlocked: "We couldn't add that address. Try a different email.",
-    errorFailed: "Something went wrong and your email wasn't sent. Try again in a moment.",
-    success: "You're on the list. We'll email you once when Teressa opens.",
+    button: "Open the app",
   },
   footer: {
     links: [{ label: "Contact", href: "#" }],

@@ -1,12 +1,12 @@
 ---
-import WaitlistForm from "./WaitlistForm.astro";
-import { copy } from "../data/copy";
+import Button from "./Button.astro";
+import { copy, APP_URL } from "../data/copy";
 const c = copy.cta;
 ---
-<section id="waitlist" class="cta">
+<section class="cta">
   <div class="wrap">
     <h2 data-split>{c.title}</h2>
-    <div data-fade><WaitlistForm source="footer" center /></div>
+    <div data-fade><Button href={APP_URL}>{c.button}</Button></div>
   </div>
 </section>
 
